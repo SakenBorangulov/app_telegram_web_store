@@ -52,7 +52,7 @@ const ProductList = () => {
       totalPrice: getTotalPrice(addedItems),
       queryId
     }
-    fetch("http://localhost:8000", {
+    fetch("https://app-telegram-web-store-backend.onrender.com", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
