@@ -60,8 +60,7 @@ const ProductList = () => {
       body: JSON.stringify(data)
     })
     
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [addedItems, queryId])
 
   useEffect(() => {
     tg.onEvent("mainButtonClicked", onSendData)
