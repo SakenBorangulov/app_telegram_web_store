@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ProductItem from "../productItem/ProductItem";
 import "./productList.css";
 import { useTelegram } from "../../hooks/useTelegram";
@@ -22,7 +22,7 @@ const getTotalPrice = (items = []) => {
 
 const ProductList = () => {
   const [addedItems, setAddedItems] = useState([]);
-  const { tg } = useTelegram()
+  const { tg, queryId } = useTelegram()
 
   const onAdd = (product) => {
     const alreadyAdded = addedItems.find(item => item.id === product.id)
@@ -45,6 +45,31 @@ const ProductList = () => {
       });
     }
   }
+
+  const onSendData = useCallback(() => {
+    const data = {
+      products: addedItems,
+      totalPrice: getTotalPrice(addedItems),
+      queryId
+    }
+    fetch("http://localhost:8000", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data)
+    })
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    tg.onEvent("mainButtonClicked", onSendData)
+    return () => {
+      tg.offEvent("mainButtonClicked", onSendData)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onSendData])
 
   return (
     <div className="list">
